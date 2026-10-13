@@ -1,65 +1,60 @@
 # Website Monitor
 
-A small Windows desktop tool that watches a website and tells you the moment it comes back online.
+A tool that checks if a website is up or down.
 
-Built for a simple, annoying problem: you need to download data from a site whose server is down, and you don't want to sit there hitting refresh. Enter the address, pick how often to check, press **Start**, and get on with your day. When the site starts responding again, Website Monitor plays a sound, jumps to the front of your screen and pops up a message.
+I made this because I needed to download data from a website, but the server for the website was down. I didn't want to keep refreshing the page to see if it was back up, so this checks it for me. You put in the website, set how often it should check (1 min, 5 min, etc.), and it tells you if the website is still down or if it's back up.
 
-![Website Monitor in dark mode, showing an outage and recovery on the live graph](docs/screenshot.png)
+![Website Monitor](docs/screenshot.png)
 
-## Features
+## What it does
 
-- **Automatic checks** every 30 seconds up to every 60 minutes, or on demand with **Check now**
-- **Big ONLINE / DOWN status** you can read from across the room
-- **Back-online alert**: sound, notification pop-up and window brought to the front (only when the site actually goes from down to up)
-- **Live graph** of response times for the last 60 checks, with outages shown as red bands, plus a countdown bar to the next check
-- **Stats at a glance**: total checks, % of checks that were up, average response time
-- **Log** of every check with the time and the server's answer (e.g. `200 OK`, `503 Service Unavailable`, `Timed out`)
-- **Dark mode** (including the Windows title bar)
-- **Remembers** your last website, interval, theme and window size
-- **Nothing to install** if you have ArcGIS Pro, since it runs on the Python that ships with it
+- Checks the website on a time interval, from every 30 seconds to every 60 minutes
+- You can also check it right away with Check now
+- Shows ONLINE or DOWN
+- When the website comes back up, it plays a sound and shows a pop-up
+- Graph that shows the response time for each check. Red is when the website was down
+- Log of every check with the time and the result
+- Dark mode
+- Saves the last website and settings you used
 
-## Requirements
+## What you need
 
-- Windows 10 or 11
-- **ArcGIS Pro** installed (the tool uses its bundled Python, which already includes everything needed)
+- Windows
+- ArcGIS Pro. The tool runs on the Python that comes with ArcGIS Pro, so you don't need to install anything else
 
-Using a different Python instead? Any Python 3.8+ with Tkinter works. Just run `pythonw website_monitor.py`. Pillow is only needed if you want to regenerate the icon.
+If you don't have ArcGIS Pro, any Python 3 with tkinter will work. Run `pythonw website_monitor.py`.
 
-## Getting started
+## How to use it
 
-1. Download or clone this repository and keep all the files together in one folder.
-2. Double-click **`Run Website Monitor.bat`**.
-3. Type the website address, choose an interval and press **Start**.
+1. Download the files and keep them in the same folder
+2. Double-click `Run Website Monitor.bat`
+3. Put in the website, pick how often to check, and click Start
 
-You can minimize the window and leave it running. It keeps checking in the background.
+You can minimize it and it will keep checking.
 
-### Optional: a desktop shortcut with the app icon
+### Desktop shortcut with the icon
 
-Right-click your desktop → **New → Shortcut** and use:
+If you want an icon on your desktop to open it:
 
-| Field | Value |
-|---|---|
-| Location | `"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe" "<folder>\website_monitor.py"` |
-| Name | `Website Monitor` |
+1. Right-click the desktop, then New > Shortcut
+2. For the location, put:
+   ```
+   "C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe" "C:\path\to\folder\website_monitor.py"
+   ```
+   Change `C:\path\to\folder` to where you saved the files
+3. Name it `Website Monitor`
+4. Right-click the shortcut, then Properties > Change Icon, and pick `website_monitor.ico`
 
-Then right-click the shortcut → **Properties → Change Icon…** and select `website_monitor.ico`. Replace `<folder>` with wherever you saved the project. Launching this way also skips the brief console window the `.bat` shows.
+## How it decides if the website is up or down
 
-## How "up" and "down" are decided
+It tries to load the website and waits up to 30 seconds.
 
-Each check requests the page with a 30-second timeout.
-
-| Result | Status |
-|---|---|
-| Any response below HTTP 500 (`200 OK`, redirects, `403`, `404`, …) | **Online**: the server is answering |
-| HTTP 5xx (`500`, `502 Bad Gateway`, `503 Service Unavailable`, `504`, …) | **Down**: typical of a server that is crashed, overloaded or in maintenance |
-| No response within 30 s, connection refused, or address not found | **Down** |
+- **Up:** the website responds (anything under a 500 error, like 200 OK or 404)
+- **Down:** a 500 error (like 502 or 503, which is what you usually get when a server is down), no response after 30 seconds, or it can't connect at all
 
 ## Files
 
-| File | What it is |
-|---|---|
-| `website_monitor.py` | The app |
-| `Run Website Monitor.bat` | Double-click launcher (finds ArcGIS Pro's Python automatically) |
-| `website_monitor.ico` | App icon (window, taskbar, shortcut) |
-| `make_icon.py` | Script that draws the icon; edit and run it to change the design |
-| `website_monitor_settings.json` | Created on first close to store your preferences (not committed) |
+- `website_monitor.py`: the tool
+- `Run Website Monitor.bat`: double-click this to open the tool
+- `website_monitor.ico`: the icon
+- `make_icon.py`: makes the icon. Edit it and run it if you want to change the icon
