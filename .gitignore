@@ -1,0 +1,11 @@
+# Personal settings (last URL, window size, theme)
+website_monitor_settings.json
+
+# Shortcut contains absolute paths for this PC only
+*.lnk
+
+# Old compiled build (blocked by IT)
+*.exe
+
+__pycache__/
+*.pyc
